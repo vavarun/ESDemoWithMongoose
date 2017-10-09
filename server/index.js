@@ -5,8 +5,10 @@ const Router = require('koa-router');
 
 const router = new Router();
 
-const schema = require('./schemas.js');
+const schema = require('./schema.js');
 
+
+console.log(schema);
 const app = new Koa();
 
 const PORT = '3000'
@@ -17,7 +19,10 @@ router.post('/graphql', graphqlKoa(ctx => ({
 
 router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
 
-app.use(bodyParser());
+app
+  .use(bodyParser())
+  .use(router.routes())
+;
 
 app.on('error', (err) => {
   console.error('server error', err);
