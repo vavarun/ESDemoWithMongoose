@@ -1,0 +1,40 @@
+{
+  "name": "esdemo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vavarun/ESDemoWithMongoose.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vavarun/ESDemoWithMongoose/issues"
+  },
+  "homepage": "https://github.com/vavarun/ESDemoWithMongoose#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "elasticsearch": "^13.3.1",
+    "graphql-compose": "^2.9.1",
+    "graphql-compose-elasticsearch": "^1.8.2",
+    "graphql-compose-mongoose": "^1.9.2",
+    "graphql-server-koa": "^1.1.3",
+    "graphql-tools": "^2.2.1",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-router": "^7.2.1",
+    "mongoose": "^4.12.1",
+    "mongoose-elasticsearch-xp": "^5.2.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1"
+  }
+}
