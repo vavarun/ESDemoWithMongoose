@@ -60,8 +60,8 @@ const AgentEsTC = composeWithElastic({
 
 const AppointmentEsTC = composeWithElastic({
   graphqlTypeName: 'AppointmentES',
-  elasticIndex: 'agents',
-  elasticType: 'agent',
+  elasticIndex: 'appointments',
+  elasticType: 'appointment',
   elasticMapping: { properties: generate(AppointmentSchema) },
   elasticClient,
   pluralFields: [],
@@ -69,8 +69,8 @@ const AppointmentEsTC = composeWithElastic({
 
 const CustomerEsTC = composeWithElastic({
   graphqlTypeName: 'CustomerES',
-  elasticIndex: 'sales',
-  elasticType: 'sale',
+  elasticIndex: 'customers',
+  elasticType: 'customer',
   elasticMapping: { properties: generate(CustomerSchema) },
   elasticClient,
   pluralFields: ['appointment_ids'],
