@@ -1,14 +1,11 @@
 const { GQC } = require('graphql-compose');
-const {
-  AgentEsTC,
-  AgentTC,
-  AppointmentEsTC,
-  AppointmentTC,
-  CustomerEsTC,
-  CustomerTC
-} = require('../models');
+const { AgentEsTC, AgentTC } = require('./Agent');
+const { AppointmentEsTC, AppointmentTC } = require('./Appointment');
+const { CustomerEsTC, CustomerTC } = require('./Customer');
 
-GQC.rootQuery().addFields({
+const QueryTC = GQC.rootQuery();
+
+QueryTC.addFields({
   agentEsConnection: AgentEsTC.getResolver('search'),
   agentMongoConnection: AgentTC.getResolver('connection'),
   agentMany: AgentTC.getResolver('findMany'),
@@ -26,5 +23,4 @@ GQC.rootQuery().addFields({
   customerById: CustomerTC.getResolver('findById'),
 });
 
-const schema = GQC.buildSchema();
-module.exports = schema;
+module.exports = QueryTC;
