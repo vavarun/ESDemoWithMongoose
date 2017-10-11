@@ -1,7 +1,9 @@
-const mongoose = require('mongoose');
 const mexp = require('mongoose-elasticsearch-xp');
 const { generate } = require('mongoose-elasticsearch-xp/lib/mapping');
-
+const { composeWithMongoose } = require('graphql-compose-mongoose');
+const { composeWithElastic } = require('graphql-compose-elasticsearch');
+const { db, mongoose } = require('../mongoose');
+const elasticClient = require('../elasticClient');
 
 const AgentSchema = new mongoose.Schema(
   {
@@ -27,7 +29,7 @@ const AgentSchema = new mongoose.Schema(
 
 AgentSchema.plugin(mexp, { client: elasticClient, index: 'agents', type: 'agent' });
 
-const Agent = mongoose.model('Agent', AgentSchema, 'Agents');
+const Agent = db.model('Agent', AgentSchema, 'Agents');
 
 const AgentTC = composeWithMongoose(Agent);
 

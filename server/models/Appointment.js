@@ -1,6 +1,9 @@
-const mongoose = require('mongoose');
 const mexp = require('mongoose-elasticsearch-xp');
 const { generate } = require('mongoose-elasticsearch-xp/lib/mapping');
+const { composeWithMongoose } = require('graphql-compose-mongoose');
+const { composeWithElastic } = require('graphql-compose-elasticsearch');
+const { db, mongoose } = require('../mongoose');
+const elasticClient = require('../elasticClient');
 
 const AppointmentSchema = new mongoose.Schema(
   {
@@ -25,7 +28,7 @@ AppointmentSchema.plugin(mexp, {
   type: 'appointment',
 });
 
-const Appointment = mongoose.model('Appointment', AppointmentSchema, 'Appointments');
+const Appointment = db.model('Appointment', AppointmentSchema, 'Appointments');
 
 const AppointmentTC = composeWithMongoose(Appointment);
 
