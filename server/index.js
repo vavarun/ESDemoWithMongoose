@@ -16,7 +16,7 @@ router.post(
   }))
 );
 
-router.get('/graphiql', graphiqlKoa({ endpointURL: '/graphql' }));
+router.get('/graphql', graphiqlKoa({ endpointURL: '/graphql' }));
 
 app.use(bodyParser()).use(router.routes());
 
