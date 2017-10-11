@@ -1,1 +1,1 @@
-# ESDemoWithMongoose
+# compose-elasticsearch-demo
