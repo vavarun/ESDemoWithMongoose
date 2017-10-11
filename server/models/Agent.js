@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
+const mexp = require('mongoose-elasticsearch-xp');
+const { generate } = require('mongoose-elasticsearch-xp/lib/mapping');
 
-const Agent = new mongoose.Schema(
+
+const AgentSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -14,14 +17,40 @@ const Agent = new mongoose.Schema(
     city: {
       type: String,
     },
-    appointment_ids: [
-      { type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' }
-    ],
+    appointment_ids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' }],
   },
   {
     minimize: false,
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
   }
 );
 
-module.exports = Agent;
+AgentSchema.plugin(mexp, { client: elasticClient, index: 'agents', type: 'agent' });
+
+const Agent = mongoose.model('Agent', AgentSchema, 'Agents');
+
+const AgentTC = composeWithMongoose(Agent);
+
+const AgentEsTC = composeWithElastic({
+  graphqlTypeName: 'AgentES',
+  elasticIndex: 'agents',
+  elasticType: 'agent',
+  elasticMapping: { properties: generate(AgentSchema) },
+  elasticClient,
+  pluralFields: ['appointment_ids'],
+});
+
+AgentEsTC.getResolver('search').getTypeComposer().getFieldTC('hits').addRelation('fromMongo', {
+  resolver: () => AgentTC.getResolver('findById'),
+  prepareArgs: {
+    _id: source => source._id,
+  },
+  projection: { _id: true },
+});
+
+module.exports = {
+  AgentSchema,
+  Agent,
+  AgentTC,
+  AgentEsTC,
+};

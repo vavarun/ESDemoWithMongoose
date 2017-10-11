@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
+const mexp = require('mongoose-elasticsearch-xp');
+const { generate } = require('mongoose-elasticsearch-xp/lib/mapping');
 
-const Customer = new mongoose.Schema(
+const CustomerSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -14,14 +16,43 @@ const Customer = new mongoose.Schema(
     city: {
       type: String,
     },
-    appointment_ids: [
-      { type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' }
-    ],
+    appointment_ids: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' }],
   },
   {
     minimize: false,
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
   }
 );
 
-module.exports = Customer;
+CustomerSchema.plugin(mexp, { client: elasticClient, index: 'customers', type: 'customer' });
+
+const Customer = mongoose.model('Customer', CustomerSchema, 'Customers');
+
+const CustomerTC = composeWithMongoose(Customer);
+
+const CustomerEsTC = composeWithElastic({
+  graphqlTypeName: 'CustomerES',
+  elasticIndex: 'customers',
+  elasticType: 'customer',
+  elasticMapping: { properties: generate(CustomerSchema) },
+  elasticClient,
+  pluralFields: ['appointment_ids'],
+});
+
+CustomerEsTC.getResolver('search')
+  .getTypeComposer()
+  .getFieldTC('hits')
+  .addRelation('fromMongo', {
+    resolver: () => CustomerTC.getResolver('findById'),
+    prepareArgs: {
+      _id: source => source._id,
+    },
+    projection: { _id: true },
+  });
+
+module.exports = {
+  CustomerSchema,
+  Customer,
+  CustomerTC,
+  CustomerEsTC,
+};
